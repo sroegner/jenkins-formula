@@ -53,7 +53,7 @@ jenkins:
       - file: jenkins config
       {% endif %}
 
-{% if grains['os_family'] in ['RedHat', 'Debian'] %}
+{%- if grains['os_family'] in ['RedHat', 'Debian'] %}
 jenkins config:
   file.managed:
     {% if grains['os_family'] == 'RedHat' %}
@@ -66,7 +66,28 @@ jenkins config:
     - template: jinja
     - user: root
     - group: root
-    - mode: 400
+    - mode: 640
     - require:
       - pkg: jenkins
-{% endif %}
+
+{%- if not jenkins.allow_wizard %}
+jenkins.secretDirectory:
+  file.directory:
+    - name: {{ jenkins.home }}/secrets
+    - mode: 700
+    - user: {{ jenkins.user }}
+    - group: {{ jenkins.group }}
+    - require:
+      - pkg: jenkins
+
+jenkins.nonFakeAdminPassword:
+  file.managed:
+    - name: {{ jenkins.home }}/secrets/initialAdminPassword
+    - contents: {{ jenkins.admin_password }}
+    - mode: 400
+    - user: {{ jenkins.user }}
+    - group: {{ jenkins.group }}
+    - require:
+      - file: jenkins.secretDirectory
+{%- endif %}
+{%- endif %}

@@ -15,13 +15,13 @@ provisioner:
   formula: jenkins
 
 platforms:
-  - name: ubuntu-16.04
-    driver_config:
-      provision_command:
-        - apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
-      run_command: /sbin/init
-      privileged: true
-      pid_one_command: /usr/lib/systemd/systemd
+#  - name: ubuntu-16.04
+#    driver_config:
+#      provision_command:
+#        - apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
+#      run_command: /sbin/init
+#      privileged: true
+#      pid_one_command: /usr/lib/systemd/systemd
   - name: centos-7
     driver_config:
       image: centos:7
@@ -31,11 +31,6 @@ platforms:
       run_command: /sbin/init
       privileged: true
       pid_one_command: /usr/lib/systemd/systemd
-#  - name: amazonlinux
-#    driver_config:
-#      image: amazonlinux:latest
-#      platform: rhel
-#      run_command: /sbin/init
 
 suites:
   - name: default
@@ -47,6 +42,7 @@ suites:
             - sun-java
             - sun-java.env
             - jenkins.plugins
+            - jenkins.setup
             - jenkins.jobs
             - nginx
             - nginx.ng
@@ -78,10 +74,14 @@ suites:
               server_name: localhost
               master_url: http://localhost:8080
               use_upstart: False
+              allow_wizard: False
+              admin_username: admin
+              admin_password: admin123
               plugins:
                 timeout: 90
                 installed:
                   - greenballs
+                  - matrix-auth
               pkgs:
                 - jenkins
         nginx.sls:

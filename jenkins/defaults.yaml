@@ -12,13 +12,17 @@ jenkins:
   home: /var/lib/jenkins
   java_args: -Djava.awt.headless=true
   java_executable: /usr/bin/java
-  jenkins_args:
+  jenkins_args: ""
   max_open_files: 32768
   umask: 027
   enable_access_log: no
   access_log: --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/$NAME/access.log
   port: 80
   jenkins_port: 8080
+  allow_wizard: True
+  startup_quiet: False
+  admin_username: admin
+  admin_password: admin
   server_name: None
   cli_path: /var/cache/jenkins/jenkins-cli.jar
   cli_timeout: 60
