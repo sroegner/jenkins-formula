@@ -36,6 +36,27 @@ jenkins:
     timeout: 30
     installed: []
     disabled: []
+    suggested:
+      - ant
+      - antisamy-markup-formatter
+      - build-timeout
+      - cloudbees-folder
+      - credentials-binding
+      - email-ext
+      - git
+      - github-branch-source
+      - gradle
+      - ldap
+      - mailer
+      - matrix-auth
+      - pam-auth
+      - pipeline-github-lib
+      - pipeline-stage-view
+      - ssh-slaves
+      - subversion
+      - timestamper
+      - workflow-aggregator
+      - ws-cleanup
   jobs:
     installed: {}
     absent: []

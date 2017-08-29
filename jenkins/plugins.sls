@@ -25,8 +25,8 @@ jenkins_updates_file:
       - pkg: jenkins_updates_file
       - file: jenkins_updates_file
 
-{% for plugin in jenkins.plugins.installed %}
-jenkins_install_plugin_{{ plugin }}:
+{% for plugin in jenkins.plugins.installed|list + jenkins.plugins.suggested|list %}
+jenkins_install_plugin_{{ plugin }}_{{ loop.index }}:
   cmd.run:
     - unless: {{ jenkins_cli('list-plugins') }} | grep {{ plugin }}
     - name: {{ jenkins_cli('install-plugin', plugin) }}

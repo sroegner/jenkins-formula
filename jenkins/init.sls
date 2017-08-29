@@ -23,6 +23,10 @@ jenkins_user:
     - shell: /bin/bash
     - require:
       - group: jenkins_group
+  cmd.run:
+    - name: ssh-keygen -q -N '' -t rsa -b 1024 -f {{ jenkins.home }}/.ssh/id_rsa
+    - runas: {{ jenkins.user }}
+    - unless: test -f {{ jenkins.home }}/.ssh/id_rsa
 
 jenkins:
   {% if grains['os_family'] in ['RedHat', 'Debian'] %}

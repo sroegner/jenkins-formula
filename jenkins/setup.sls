@@ -1,4 +1,5 @@
 {% from "jenkins/map.jinja" import jenkins with context %}
+{% from 'jenkins/macros.jinja' import jenkins_cli with context %}
 
 {% if grains['os_family'] in ['RedHat', 'Debian'] %}
 jenkins.upgradeStateFile:
@@ -20,10 +21,10 @@ jenkins.initHookDirectory:
     - require:
       - pkg: jenkins
 
-jenkins.initHookScript:
+jenkins.writeSshScript:
   file.managed:
-    - name: {{ jenkins.home }}/init.groovy.d/initJenkins.groovy
-    - source: salt://jenkins/files/groovy/initJenkins.groovy
+    - name: {{ jenkins.home }}/init.groovy.d/sshAuthForAdmin.groovy
+    - source: salt://jenkins/files/groovy/sshAuthForAdmin.groovy
     - template: jinja
     - user: {{ jenkins.user }}
     - group: {{ jenkins.group }}
@@ -32,4 +33,23 @@ jenkins.initHookScript:
       - file: jenkins.initHookDirectory
     - watch_in:
       - cmd: restart_jenkins
+
+jenkins.writeSetupScript:
+  file.managed:
+    - name: /tmp/setupJenkins.groovy
+    - source: salt://jenkins/files/groovy/setupJenkins.groovy
+    - template: jinja
+    - user: {{ jenkins.user }}
+    - group: {{ jenkins.group }}
+    - mode: 644
+    - watch_in:
+      - cmd: restart_jenkins
+
+jenkins.executeInitHookScript:
+  cmd.run:
+    - name: {{ jenkins_cli('groovy /tmp/setupJenkins.groovy') }}
+    - runas: jenkins
+    - require:
+      - service: jenkins
+
 {% endif %}
